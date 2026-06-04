@@ -10,7 +10,7 @@ services:
       - app
 
   app:
-    image: springboot-demo:v1
+    image: springboot-demo:v2
     container_name: springboot-app
     ports:
       - "8082:8081"
