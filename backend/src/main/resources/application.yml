@@ -1,2 +1,9 @@
 server:
   port: ${SERVER_PORT:8081}
+spring:
+  profiles:
+    active: dev
+  data:
+    redis:
+      host: redis-demo
+      port: 6379
