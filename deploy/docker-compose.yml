@@ -19,4 +19,18 @@ services:
     image: redis:latest
     container_name: redis-demo
     ports:
-      - "6379:6379"
+      - "6378:6379"
+  
+  mysql:
+    image: mysql:8.4
+    container_name: mysql-demo
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: ai_system
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
