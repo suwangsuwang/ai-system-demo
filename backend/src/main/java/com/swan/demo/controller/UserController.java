@@ -3,8 +3,9 @@ package com.swan.demo.controller;
 
 import com.swan.demo.common.PageResult;
 import com.swan.demo.common.Result;
+import com.swan.demo.context.UserContext;
 import com.swan.demo.dto.CreateUserRequest;
-import com.swan.demo.dto.UserDTO;
+import com.swan.demo.vo.UserVO;
 import com.swan.demo.entity.User;
 import com.swan.demo.service.UserService;
 import org.apache.ibatis.annotations.Select;
@@ -21,7 +22,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public Result<UserDTO> getUser(@PathVariable Long id) {
+    public Result<UserVO> getUser(@PathVariable Long id) {
         return Result.ok(userService.findById(id));
     }
 
@@ -54,6 +55,14 @@ public class UserController {
         return Result.ok(
                 result
         );
+    }
+
+    @GetMapping("/me")
+    public Result<UserVO> me() {
+
+        Long userId = UserContext.get();
+
+        return Result.ok(userService.findById(userId));
     }
 
 }

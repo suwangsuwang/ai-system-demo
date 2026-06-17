@@ -61,4 +61,11 @@ public interface UserMapper {
             from user
             """)
     Long count();
+
+    @Select("""
+            select *
+            from user
+            where username = #{username}
+            """)
+    User findByUsername(String username);
 }

@@ -1,12 +1,25 @@
-package com.swan.demo.dto;
+package com.swan.demo.vo;
 
-public class UserDTO {
+import com.swan.demo.entity.User;
+
+public class UserVO {
 
     private Long id;
 
     private String username;
 
     private String nickname;
+
+    public static UserVO from(User user) {
+        if (user == null) {
+            return null;
+        }
+        UserVO vo = new UserVO();
+        vo.setId(user.getId());
+        vo.setUsername(user.getUsername());
+        vo.setNickname(user.getNickname());
+        return vo;
+    }
 
     public Long getId() {
         return id;

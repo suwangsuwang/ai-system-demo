@@ -1,12 +1,14 @@
 package com.swan.demo.service;
 
 import com.swan.demo.dto.CreateUserRequest;
-import com.swan.demo.dto.UserDTO;
 import com.swan.demo.entity.User;
 import com.swan.demo.mapper.UserMapper;
+import com.swan.demo.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -15,10 +17,35 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public UserDTO findById(Long id) {
-        User user =  userMapper.findById(id);
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
-        return toDTO(user);
+    public UserVO findById(Long id) {
+
+        String key = "user:" + id;
+
+        UserVO cache = (UserVO) redisTemplate.opsForValue().get(key);
+
+        if (cache != null) {
+
+            System.out.println("🔥 FROM REDIS");
+
+            return cache;
+        }
+
+        System.out.println("🔥 FROM MYSQL");
+
+        User user = userMapper.findById(id);
+
+        if (user == null) {
+            return null;
+        }
+
+        UserVO vo = UserVO.from(user);
+
+        redisTemplate.opsForValue().set(key, vo, Duration.ofMinutes(30));
+
+        return vo;
     }
 
     public Long createUser(CreateUserRequest request) {
@@ -51,19 +78,8 @@ public class UserService {
         return userMapper.count();
     }
 
-
-    private UserDTO toDTO(User user) {
-
-        if (user == null) {
-            return null;
-        }
-
-        UserDTO dto = new UserDTO();
-
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
-        dto.setNickname(user.getNickname());
-
-        return dto;
+    public User findByUsername(String username) {
+        return userMapper.findByUsername(username);
     }
+
 }
