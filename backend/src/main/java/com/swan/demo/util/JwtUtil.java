@@ -6,41 +6,29 @@ import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Map;
 
 public class JwtUtil {
 
-    private static final String SECRET =
-            "abcdefghijklmnopqrstuvwxyz123456";
+    private static final SecretKey KEY =
+            Keys.hmacShaKeyFor("abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGH".getBytes());
 
-    private static final SecretKey Key =
-            Keys.hmacShaKeyFor(
-                    SECRET.getBytes()
-            );
-
-    public static String createToken(Long userId) {
+    public static String createToken(Map<String, Object> claims) {
 
         return Jwts.builder()
-                .subject(String.valueOf(userId))
+                .claims(claims)
                 .issuedAt(new Date())
-                .expiration(
-                        new Date(
-                                System.currentTimeMillis()
-                                            + 86400000
-                        )
-                )
-                .signWith(Key)
+                .expiration(new Date(System.currentTimeMillis() + 86400000))
+                .signWith(KEY)
                 .compact();
     }
 
-    public static Long parseToken(String token) {
+    public static Claims parseToken(String token) {
 
-        Claims claims =
-                Jwts.parser()
-                        .verifyWith(Key)
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
-
-        return Long.valueOf(claims.getSubject());
+        return Jwts.parser()
+                .verifyWith(KEY)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

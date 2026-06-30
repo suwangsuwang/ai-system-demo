@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -32,7 +35,10 @@ public class AuthController {
             return Result.fail("密码错误");
         }
 
-        String token = JwtUtil.createToken(user.getId());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole());
+        claims.put("userId", user.getId());
+        String token = JwtUtil.createToken(claims);
         return Result.ok(token);
 
     }

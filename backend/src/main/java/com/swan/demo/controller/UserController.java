@@ -1,6 +1,9 @@
 package com.swan.demo.controller;
 
 
+import com.swan.demo.annotation.Require;
+import com.swan.demo.annotation.RequirePermission;
+import com.swan.demo.annotation.RequireRole;
 import com.swan.demo.common.PageResult;
 import com.swan.demo.common.Result;
 import com.swan.demo.context.UserContext;
@@ -33,6 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/list")
+    @RequirePermission("user:list")
     public Result<List<User>> list() {
         return Result.ok(userService.findAll());
     }
@@ -60,9 +64,16 @@ public class UserController {
     @GetMapping("/me")
     public Result<UserVO> me() {
 
-        Long userId = UserContext.get();
+        Long userId = UserContext.getUserId();
 
         return Result.ok(userService.findById(userId));
+    }
+
+    @RequireRole("admin")
+    @GetMapping("/delete")
+    public Result delete() {
+
+        return Result.ok("");
     }
 
 }

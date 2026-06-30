@@ -2,22 +2,24 @@ package com.swan.demo.entity;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class User {
+public class Asset {
 
     private Long id;
 
-    private String username;
+    private String name;
 
-    private String password;
+    private String type;
 
-    private String nickname;
+    private BigDecimal amount;
+
+    private String remark;
 
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
 
-    private String role;
 }
